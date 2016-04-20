@@ -1,0 +1,16 @@
+ORIGIN 0
+SEGMENT CODE:
+  MULT R1, R2, R3 ; this is the first comment
+; this is the second comment
+XOR R1, R2, R3
+NOT R1, R1
+; this is the third comment
+NOR R1, R2, R3
+NOT R1, R1
+; this is the fourth comment
+NAND R1, R2, R3
+NOT R1, R1
+; this is the fifth comment
+LDB R1, R2, 12
+LSHFL R1, 8
+RSHFA R1, 8
