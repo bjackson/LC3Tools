@@ -5,3 +5,6 @@ SEGMENT CODE:
   NOR R1, R2, R3 ; this is the third comment
   NAND R1, R2, R3 ; this is the fourth comment
   LDBSE R1, R2, 12 ; this is the fifth comment
+  OR R1, R2, R3 ; this is the sixth comment
+
+MULT R1, R2, R3 ; 7th comment

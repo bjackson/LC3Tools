@@ -8,3 +8,4 @@ Release
 Obj
 testcode/*.obj
 *.out
+*.lc3

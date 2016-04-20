@@ -75,13 +75,22 @@ def transformLine(line, comment):
 def run():
     with open(filename, "r") as inFile, open(outName, "w") as outFile:
         for line in inFile:
+            addTab = False
+            if line[0] == ' ':
+                addTab = True
+
             instr, comment = tokenizeLine(line)
-            # print((instr, comment))
-            # outFile.write(str(tokenized))
+
             if shouldTransform(line):
                 transformedLine = transformLine(instr, comment)
                 print(transformedLine)
-                outFile.write(transformedLine)
+                if addTab:
+                    transLines = transformedLine.split('\n')
+                    transLines = ['\t' + theLine for theLine in transLines]
+                    for tLine in transLines:
+                        outFile.write(tLine + '\n')
+                else:
+                    outFile.write(transformedLine)
             else:
                 print(line)
                 outFile.write(line)
