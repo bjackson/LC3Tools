@@ -298,4 +298,23 @@ typedef union LC3bInstruction_t
 		Word Opcode	: 4;
 	} Rti;
 #endif
+#ifdef BIG_ENDIAN_BUILD
+	struct
+	{
+		Word Opcode	: 4;
+		Word DR	: 3;
+		Word SR1 : 3;
+		Word ExtOp : 3;
+		Word SR2 : 3;
+	} ExtOpInst;
+#else
+	struct
+	{
+		Word SR2 : 3;
+		Word ExtOp	: 3;
+		Word SR1 : 3;
+		Word DR	: 3;
+		Word Opcode	: 4;
+	} ExtOpInst;
+#endif
 } LC3bInstruction;

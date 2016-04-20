@@ -9,6 +9,8 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
 #include "JMTLib.h"
 
 using namespace std;
@@ -30,7 +32,7 @@ namespace JMT	{
 	SparseArray class
 	 ________
 	|Overview|
-	
+
 	This class is used to create large indexible arrays where it is known that
 	access will be sparse or of limited range.
 
@@ -53,10 +55,10 @@ namespace JMT	{
 	SparseArray partitions the indexable space into bit divisions.
 	For instance, a 32-bit index space could be divided into 4 8-bit index
 	sub-ranges: [31:24][23:16][15:8][7:0]
-	
+
 	Each bit-range is stored as a node which holds an array of pointers.
 	The last used bit-range is a node which holds an array of data.
-	
+
 	The index space is arranged into a tree. In the above example, the root
 	node would have an array of 256 pointers [31:24]. Each of those would
 	point to a node with 256 pointers [23:16]. Each of those would point to a
@@ -133,13 +135,13 @@ namespace JMT	{
 	version. The single-threaded version lacks internal synchronization, and
 	is faster. The multi-threaded version is slower but is thread-safe. To
 	use the multi-threaded version, #define MULTITHREADED
-	
+
 	Data can be accessed concurrently by multiple threads through operator[],
 	Read(), operator>>, operator<<, and CopyTo().
 
 	Accesses to Compact(), destructor, and operator= will wait until no more
 	threads are accessing this subtree.
-	
+
 	In addition to other exceptions, when Multi-Threading is enabled, any
 	function could also throw a SynchFailed exception. Also, References could
 	throw an UnsafeReference exception.
@@ -190,7 +192,7 @@ namespace JMT	{
 	have pointers to subtrees floating around.
 \*_,-=~~""``^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^``""~~==-,_*/
 template<class IndexType, class ValueType>
-class SparseArray  
+class SparseArray
 {
 public:
 
@@ -428,7 +430,7 @@ protected:
 	};
 
 public:
-	
+
 	/**************************************************************************\
 	 *	SparseArray()
 	 *
@@ -634,7 +636,7 @@ public:
 	 *	If the indexed location is out of bounds, an exception is thrown.
 	 *	If the indexed location has not yet been created, a reference to a
 	 *	dummy default construction of ValueType is returned (ie, ValueType()).
-	 *	
+	 *
 	 *	The advantage of this function is that it only traverses existing nodes.
 	 *	It does not have the overhead of creating nodes. If the location hasn't
 	 *	been created yet, it will return fast.
@@ -882,7 +884,7 @@ public:
 	 *	is written to the output.
 	 *
 	 *	It is recommended that Compact() be called before this.
-	 *	
+	 *
 	 *	A second SparseArray-oriented version is also provided.
 	\******/
 	friend ostream &operator<<(ostream &Output, SparseArray<IndexType, ValueType> &Source)
@@ -1006,7 +1008,7 @@ public:
 	 *	If the SparseArray is already populated, that data will remain. Only
 	 *	data addressed in the input stream will be overwritten to the new
 	 *	value.
-	 *	
+	 *
 	 *	A second SparseArray-oriented version is also provided.
 	 *
 	 *	Calls: operator[]
@@ -1273,7 +1275,7 @@ protected:
 			BitAccumulator += AbsCurrentBits;
 			if(CurrentBits > 0)
 				UsedMask |= /*mask*/ MaskAccumulator ^ (MaskAccumulator >> AbsCurrentBits);
-			
+
 			pLevelDataVector->push_back( LevelData(
 				i,									//level #
 				(unsigned int)1 << AbsCurrentBits,	//indexability
@@ -1649,7 +1651,7 @@ public:
 	static NodePool<SparseArray> MemoryManager;
 	//Control alloc/dealloc
 	static void *operator new(size_t AllocBlock)
-	{ 
+	{
 		return (void *)MemoryManager.Pop();
 	}
 	static void operator delete(void *pOldSA)

@@ -3,6 +3,7 @@
 
 #include "JMTLib.h"
 #include <cstdio>
+#include <cstdlib>
 
 using namespace std;
 
@@ -52,7 +53,7 @@ string ToLower(const string &sString)
 				sResult[i] = tolower(sString[i]);
 		}
 		else //in quote
-		{	
+		{
 			if(!InEscape)	//Not in escape sequence
 			{
 				if(sString[i] == '\\' )
@@ -117,7 +118,7 @@ string CreateStandardPath(const string &sCurrent)
 string CreateCompactFileName(const string &sCurrent)
 {
 	string::size_type TempLoc1, TempLoc2, TempLoc3;
-	
+
 	if( (TempLoc1 = sCurrent.find("..")) == string::npos )
 		return sCurrent;
 
@@ -151,7 +152,7 @@ string CreateFileNameRelative(const string &scurrent, const string &srelative)
 	string::size_type TempLoc1, TempLoc2;
 	string sCurrent = CreateCompactFileName(scurrent);
 	string sRelative = CreateCompactFileName(srelative);
-	
+
 	TempLoc1 = sRelative.find_first_of("\\/:");
 	TempLoc2 = sRelative.find("..");
 
@@ -203,7 +204,7 @@ string CreateRelativeFileName(const string &scurrent, const string &srelative)
 
 	TempLoc1 = sCurrent.find_first_of("\\/:");
 	TempLoc2 = sRelative.find_first_of("\\/:");
-	
+
 	if(TempLoc1 == string::npos)
 		//Current has no path, so Relative is already relative to current's path
 		return sRelative;
@@ -226,7 +227,7 @@ string CreateRelativeFileName(const string &scurrent, const string &srelative)
 		TempLoc1 += TempLoc2 + 1;
 		SlashCount++;
 	}
-	
+
 	//Back up for every folder Current is in.
 	for(;SlashCount > 0; SlashCount--)
 		sRelative = string("../") + sRelative;

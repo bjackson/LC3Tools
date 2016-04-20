@@ -1,3 +1,12 @@
+UNAME := $(shell uname)
+
+ifeq ($(UNAME), Linux)
+	CC=g++
+endif
+ifeq ($(UNAME), Darwin)
+	CC=g++
+endif
+
 ASM_BUILD = Assembler
 LC3_ASM_BUILD = LC3Assembler
 LC3B_ASM_BUILD = LC3bAssembler
@@ -55,7 +64,7 @@ LC3_SIM_H = ${LC3_SIM_BUILD}/SimUI.h  ${LC3_SIM_BUILD}/LC3Arch.h
 LC3B_SIM_H = ${LC3B_SIM_BUILD}/SimUI.h ${LC3B_SIM_BUILD}/LC3bArch.h
 ASHIDE_H = ${ASHIDE_BUILD}/BreakpointWindow.h ${ASHIDE_BUILD}/CallStackWindow.h ${ASHIDE_BUILD}/ConsoleWindow.h ${ASHIDE_BUILD}/DataValuesWindow.h ${ASHIDE_BUILD}/DisassemblyWindow.h ${ASHIDE_BUILD}/FilesWindow.h ${ASHIDE_BUILD}/FileWindow.h ${ASHIDE_BUILD}/InstructionsWindow.h ${ASHIDE_BUILD}/LC3bFileWindow.h ${ASHIDE_BUILD}/LC3FileWindow.h ${ASHIDE_BUILD}/MainWindow.h ${ASHIDE_BUILD}/MemoryBytesWindow.h ${ASHIDE_BUILD}/MessageWindow.h ${ASHIDE_BUILD}/ProgramsWindow.h ${ASHIDE_BUILD}/Project.h ${ASHIDE_BUILD}/ProjectLexer.h ${ASHIDE_BUILD}/ProjectParser.h ${ASHIDE_BUILD}/ProjectToken.h ${ASHIDE_BUILD}/ReadOnlyEditor.h ${ASHIDE_BUILD}/RegistersWindow.h ${ASHIDE_BUILD}/SettingsWindow.h ${ASHIDE_BUILD}/SimulatorWindow.h ${ASHIDE_BUILD}/TextEditor.h ${ASHIDE_BUILD}/WriteDataWindow.h ${ASHIDE_BUILD}/WriteRegisterWindow.h
 LC3CONV_H = ${LC3CONV_BUILD}/AsmConvertLC3.h
-LC2CONV_H = 
+LC2CONV_H =
 JMTLIB_H = ${JMTLIB_BUILD}/JMTLib.h ${JMTLIB_BUILD}/Lexer.h ${JMTLIB_BUILD}/Token.h ${JMTLIB_BUILD}/HighlightLexer.h ${JMTLIB_BUILD}/JMTSys.h ${JMTLIB_BUILD}/SynchLib.h ${JMTLIB_BUILD}/SparseArray.h
 
 #CentOS x86_64 GCC Options
@@ -98,34 +107,34 @@ LC3bTools.set: ${RELEASE_DIR} LC3bAssembler.out LC3bSimulator.out AsmConvert2to3
 	echo "LC3bTools" > LC3bTools.set
 
 LC3Assembler.out: ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${LC3_ASM_BUILD}/main.cpp
-	g++ ${CFLAGS} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${LC3_ASM_BUILD}/main.cpp -o LC3Assembler.out
+	$(CC) ${CFLAGS} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${LC3_ASM_BUILD}/main.cpp -o LC3Assembler.out
 
 LC3bAssembler.out: ${ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3B_ASM_BUILD}/main.cpp
-	g++ ${CFLAGS} ${ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3B_ASM_BUILD}/main.cpp -o LC3bAssembler.out
+	$(CC) ${CFLAGS} ${ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3B_ASM_BUILD}/main.cpp -o LC3bAssembler.out
 
 LC3Simulator.out: ${SIM_OBJ} ${LC3_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${LC3_SIM_BUILD}/main.cpp
-	g++ ${CFLAGS} ${SIM_OBJ} ${LC3_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${LC3_SIM_BUILD}/main.cpp -o LC3Simulator.out
+	$(CC) ${CFLAGS} ${SIM_OBJ} ${LC3_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${LC3_SIM_BUILD}/main.cpp -o LC3Simulator.out
 
 LC3bSimulator.out: ${SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3B_SIM_BUILD}/main.cpp
-	g++ ${CFLAGS} ${SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3B_SIM_BUILD}/main.cpp -o LC3bSimulator.out
+	$(CC) ${CFLAGS} ${SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3B_SIM_BUILD}/main.cpp -o LC3bSimulator.out
 
 AshIDE.out: ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp
-	g++ ${CFLAGS} ${FLTKCFLAGS} ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp ${FLTKLDFLAGS} -o AshIDE.out
+	$(CC) ${CFLAGS} ${FLTKCFLAGS} ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp ${FLTKLDFLAGS} -o AshIDE.out
 
 LC3IDE.out: ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp
-	g++ ${CFLAGS} ${FLTKCFLAGS} -DDEFAULT_LANG_LC3 ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp ${FLTKLDFLAGS} -o LC3IDE.out
+	$(CC) ${CFLAGS} ${FLTKCFLAGS} -DDEFAULT_LANG_LC3 ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp ${FLTKLDFLAGS} -o LC3IDE.out
 
 LC3bIDE.out: ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp
-	g++ ${CFLAGS} ${FLTKCFLAGS} -DDEFAULT_LANG_LC3B ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp ${FLTKLDFLAGS} -o LC3bIDE.out
+	$(CC) ${CFLAGS} ${FLTKCFLAGS} -DDEFAULT_LANG_LC3B ${ASHIDE_OBJ} ${SIM_OBJ} ${LC3_SIM_OBJ} ${LC3B_SIM_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${LC3B_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_OBJ} ${ASHIDE_BUILD}/main.cpp ${FLTKLDFLAGS} -o LC3bIDE.out
 
 AsmConvertLC3.out: ${LC3CONV_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_BUILD}/main.cpp
-	g++ ${CFLAGS} ${LC3CONV_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_BUILD}/main.cpp -o AsmConvertLC3.out
+	$(CC) ${CFLAGS} ${LC3CONV_OBJ} ${ASM_OBJ} ${LC3_ASM_OBJ} ${JMTLIB_OBJ} ${LC3CONV_BUILD}/main.cpp -o AsmConvertLC3.out
 
 AsmConvert2to3.out: ${LC2CONV_OBJ}
-	g++ ${CFLAGS} ${LC2CONV_OBJ} -o AsmConvert2to3.out
+	$(CC) ${CFLAGS} ${LC2CONV_OBJ} -o AsmConvert2to3.out
 
 EndianCheck.out: ${ENDIAN_BUILD}/main.cpp ${JMTLIB_BUILD}/JMTLib.cpp
-	g++ ${CFLAGS} ${ENDIAN_BUILD}/main.cpp ${JMTLIB_BUILD}/JMTLib.cpp -o EndianCheck.out
+	$(CC) ${CFLAGS} ${ENDIAN_BUILD}/main.cpp ${JMTLIB_BUILD}/JMTLib.cpp -o EndianCheck.out
 
 #*NOTE: Some versions of make on linux don't support the following which used to be on the dependency line:
 #${ASM_OBJ}: ${ASM_OPATH} ${ASM_BUILD}/$${@F:.o=.cpp}
@@ -138,34 +147,34 @@ EndianCheck.out: ${ENDIAN_BUILD}/main.cpp ${JMTLIB_BUILD}/JMTLib.cpp
 #${LC2CONV_OBJ}: ${LC2CONV_OPATH} ${LC2CONV_BUILD}/$${@F:.o=.cpp}
 
 ${ASM_OBJ}: ${ASM_OPATH} ${ASM_CPP} ${ASM_H}
-	g++ -c ${CFLAGS} ${ASM_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${ASM_BUILD}/${*F}.cpp -o $@
 
 ${LC3_ASM_OBJ}: ${LC3_ASM_OPATH} ${LC3_ASM_CPP} ${LC3_ASM_H} ${ASM_H} ${LC3CONV_H}
-	g++ -c ${CFLAGS} ${LC3_ASM_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${LC3_ASM_BUILD}/${*F}.cpp -o $@
 
 ${LC3B_ASM_OBJ}: ${LC3B_ASM_OPATH} ${LC3B_ASM_CPP} ${LC3B_ASM_H} ${ASM_H}
-	g++ -c ${CFLAGS} ${LC3B_ASM_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${LC3B_ASM_BUILD}/${*F}.cpp -o $@
 
 ${SIM_OBJ}: ${SIM_OPATH} ${SIM_CPP} ${SIM_H} ${ASM_H}
-	g++ -c ${CFLAGS} ${SIM_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${SIM_BUILD}/${*F}.cpp -o $@
 
 ${LC3_SIM_OBJ}: ${LC3_SIM_OPATH} ${LC3_SIM_CPP} ${LC3_SIM_H} ${SIM_H} ${ASM_H} ${LC3CONV_H}
-	g++ -c ${CFLAGS} ${LC3_SIM_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${LC3_SIM_BUILD}/${*F}.cpp -o $@
 
 ${LC3B_SIM_OBJ}: ${LC3B_SIM_OPATH} ${LC3B_SIM_CPP} ${LC3B_SIM_H} ${SIM_H} ${ASM_H}
-	g++ -c ${CFLAGS} ${LC3B_SIM_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${LC3B_SIM_BUILD}/${*F}.cpp -o $@
 
 ${ASHIDE_OBJ}: ${ASHIDE_OPATH} ${ASHIDE_CPP} ${ASHIDE_H} ${SIM_H} ${ASM_H} ${LC3CONV_H}
-	g++ -c ${CFLAGS} ${FLTKCFLAGS} ${ASHIDE_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${FLTKCFLAGS} ${ASHIDE_BUILD}/${*F}.cpp -o $@
 
 ${LC3CONV_OBJ}: ${LC3CONV_OPATH} ${LC3CONV_CPP} ${LC3CONV_H} ${LC3_ASM_H} ${ASM_H}
-	g++ -c ${CFLAGS} ${LC3CONV_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${LC3CONV_BUILD}/${*F}.cpp -o $@
 
 ${LC2CONV_OBJ}: ${LC2CONV_OPATH} ${LC2CONV_CPP} ${LC2CONV_H}
-	g++ -c ${CFLAGS} ${LC2CONV_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${LC2CONV_BUILD}/${*F}.cpp -o $@
 
 ${JMTLIB_OBJ}: ${JMTLIB_OPATH} ${JMTLIB_CPP} ${JMTLIB_H}
-	g++ -c ${CFLAGS} ${JMTLIB_BUILD}/${*F}.cpp -o $@
+	$(CC) -c ${CFLAGS} ${JMTLIB_BUILD}/${*F}.cpp -o $@
 
 ${ASM_OPATH}:
 	mkdir -p ${ASM_OPATH}
@@ -202,4 +211,3 @@ ${RELEASE_DIR}:
 
 clean:
 	rm -f AshIDE.set LC3Tools.set LC3bTools.set ${ASM_OPATH}/* ${LC3_ASM_OPATH}/* ${LC3B_ASM_OPATH}/* ${SIM_OPATH}/* ${LC3_SIM_OPATH}/* ${LC3B_SIM_OPATH}/* ${ASHIDE_OPATH}/* ${LC3CONV_OPATH}/* ${LC2CONV_OPATH}/* ${JMTLIB_OPATH}/* *.out
-

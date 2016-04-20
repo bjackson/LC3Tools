@@ -28,8 +28,16 @@ namespace LC3b
 	//in a class as "static const int BLAH" is actually const.
 	//Trying to use it in static const char *const sOpcodes[BLAH]
 	//gives a compile error.
-	const unsigned int NUM_OPCODES = 28;
+	const unsigned int NUM_OPCODES = 33;
 	const unsigned int NUM_REGISTERS = 9;
+
+	enum ExtOpInstType {
+		MultInstrType = 0,
+		DivInstrType = 1,
+		SubInstrType = 2,
+		XorInstrType = 3,
+		OrInstrType = 4
+	};
 
 	/*_,-=~~""``^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^``""~~==-,_*\
 		LC3b
@@ -64,7 +72,7 @@ namespace LC3b
 		//This is an enumeration of all keywords for this ISA
 		enum ISAEnum {TOpcode = NUM_ASMTOKEN_TYPES, TRegister};
 		//This is an enumeration of all subtypes of keyword TInstruction
-		enum OpcodeEnum {ADD = 0, AND, BR, BRp, BRz, BRzp, BRn, BRnp, BRnz, BRnzp, JSR, JSRR, TRAP, JMP, LEA, LDB, LDI, LDR, STB, STI, STR, LSHF, RSHFL, RSHFA, NOT, RET, RTI, NOP};
+		enum OpcodeEnum {ADD = 0, AND, BR, BRp, BRz, BRzp, BRn, BRnp, BRnz, BRnzp, JSR, JSRR, TRAP, JMP, LEA, LDB, LDI, LDR, STB, STI, STR, LSHF, RSHFL, RSHFA, NOT, RET, RTI, NOP, MULT, DIV, SUB, XOR, OR};
 		//This holds opcode values for each instruction subtype
 		static const Word vOpcodes [NUM_OPCODES];
 		//This holds strings for each instruction subtype
@@ -213,6 +221,25 @@ namespace LC3b
 			virtual bool IsMemory() const;
 		};
 
+
+
+		class ExtOpInstr : public Instruction
+		{
+		public:
+			RegisterEnum DR, SR1, SR2;
+			ExtOpInstType opType;
+			ExtOpInstr(const LocationVector &, RegisterEnum, RegisterEnum, RegisterEnum, ExtOpInstType);
+			virtual ~ExtOpInstr();
+
+			virtual Element *Copy() const;
+			virtual void AssignValues(vector<Number *>::iterator &, const vector<Number *>::iterator &);
+			virtual bool GetImage(RamVector &, bool, CallBackFunction) const;
+			virtual unsigned int GetSources(vector<RegisterEnum> &) const;
+			virtual unsigned int GetDestinations(vector<RegisterEnum> &) const;
+			virtual operator const char *() const;
+		};
+
+
 		class AddInstr : public Instruction
 		{
 		public:
@@ -272,7 +299,7 @@ namespace LC3b
 
 			/******************************************************************\
 				BrInstr( [in] location stack, [in] branch type, [in] offset9 )
-		
+
 				Creates a branch instruction. The final paraemter could be a
 				numerical offset or a Symbol.
 			\******/

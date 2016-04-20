@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cstdlib>
 #include "JMTSys.h"
 #include "SynchLib.h"
 
@@ -34,7 +35,7 @@ namespace JMT	{
 
 	/**************************************************************************\
 		EndianCheck( )
-		
+
 		Tests to see if the platform is little or big endian.
 
 		Returns true for little endian, false for big endian.
@@ -43,7 +44,7 @@ namespace JMT	{
 
 	/**************************************************************************\
 		ToLower( [in] string )
-		
+
 		It will convert the string to lowercase.
 		Text that appears within C-style strings and character constants
 		will be unaffected.
@@ -136,14 +137,14 @@ namespace JMT	{
 
 	/**************************************************************************\
 		CreateStandardPath( [in] path+file name )
-		
+
 		Changes all "\" to "/" in the path.
 	\******/
 	string CreateStandardPath(const string &);
 
 	/**************************************************************************\
 		CreateCompactFileName( [in] path+file name )
-		
+
 		Removes any unnessassary "blah/../" in the file.
 	\******/
 	string CreateCompactFileName(const string &);
@@ -151,7 +152,7 @@ namespace JMT	{
 	/**************************************************************************\
 		CreateFileNameRelative( [in] current path+file name,
 			[in] path+file name relative to current)
-		
+
 		Current path+file name is a path relative to the working directory
 		or an absolute path.
 
@@ -170,7 +171,7 @@ namespace JMT	{
 	/**************************************************************************\
 		CreateRelativeFileName( [in] current path+file name 1,
 			[in] current path+file name 2)
-		
+
 		The first path+file name is a path relative to the working
 		directory or an absolute path.
 
@@ -366,10 +367,10 @@ namespace JMT	{
 			}
 			SYNCH_CLOSE_LOCK(Mutex)
 		}
-		
+
 		/**********************************************************************\
 			Push( [in] old node )
-		
+
 			Adds the old node to the node pool.
 			If there are too many nodes in the pool, it frees some.
 		\******/
@@ -378,7 +379,7 @@ namespace JMT	{
 			NodePointer *pOldNode = (NodePointer *)poldnode;
 			if(!pOldNode)
 				return;
-			
+
 	#ifdef NODEPOOL_DEBUG
 			memset(pOldNode, 0xCD, MAX(sizeof(NodeType), sizeof(NodePointer)));
 	#endif
@@ -441,7 +442,7 @@ namespace JMT	{
 
 		/**********************************************************************\
 			Pop( )
-		
+
 			Returns a node off the head of the pool..
 			If there aren't any nodes left, it allocates a new one.
 		\******/
@@ -474,7 +475,7 @@ namespace JMT	{
 				}
 				NPI->second = NPPop;
 	#endif
-			
+
 				return (NodeType *)pTemp;
 			}
 			pTemp = (NodePointer *)malloc( MAX(sizeof(NodeType), sizeof(NodePointer)) );
@@ -589,7 +590,7 @@ namespace std	{
 
 		This does the same thing as the STL "pair" object, except it has 3
 		members instead of 2. The code is directly expanded from the pair code.
-		
+
 		The three members can be of any type. Create one using this:
 		make_triple(X,Y,Z);
 		Access the members using .first, .second, and .third.
@@ -699,7 +700,7 @@ namespace std	{
 
 		This does the same thing as the STL "pair" object, except it has 4
 		members instead of 2. The code is directly expanded from the pair code.
-		
+
 		The four members can be of any type. Create one using this:
 		make_tetra(X,Y,Z);
 		Access the members using .first, .second, .third, and .fouth.

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <strstream>
 #include <cstdio>
+#include <cstring>
 #include "../Assembler/Assembler.h"
 #include "../LC3bAssembler/LC3bISA.h"
 
@@ -52,7 +53,7 @@ bool AssemblerUI(vector<Program *> &AsmPrograms, RamVector &MemoryImage)
 		LocationStack.push_back( LocationVector::value_type(i, 0) );
 		AsmPrograms.push_back(new Program(LocationStack, InputList[i], LC3bISA::Addressability));
 	}
-	
+
 	//*** Perform Compilation ***
 
 	//Lex, parse, and optimize each input asm file
@@ -86,7 +87,7 @@ bool AssemblerUI(vector<Program *> &AsmPrograms, RamVector &MemoryImage)
 			if(!Assemble<LC3bISA>::Compile(AsmFile, *AsmPrograms[i], AsmCallBack))
 				fRetVal = false;
 		}
-	}	
+	}
 	if(!fRetVal)
 		goto CleanUp;
 

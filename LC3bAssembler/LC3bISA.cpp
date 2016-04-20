@@ -17,8 +17,8 @@ const unsigned char LC3bISA::Addressability = 0;
 const uint64 LC3bISA::MaxAddress = 0xFFFF;
 const bool LC3bISA::fLittleEndian = true;
 
-const LC3bISA::Word LC3bISA::vOpcodes[NUM_OPCODES] = {0x1,   0x5,   0x0,  0x0,   0x0,   0x0,    0x0,   0x0,    0x0,    0x0,     0x4,   0x4,    0xF,    0xC,   0xE,   0x2,   0xA,   0x6,   0x3,   0xB,   0x7,   0xD,    0xD,     0xD,     0x9,   0xC,   0x8,   0x0};
-const char *const LC3bISA::sOpcodes[NUM_OPCODES] =  {"ADD", "AND", "BR", "BRp", "BRz", "BRzp", "BRn", "BRnp", "BRnz", "BRnzp", "JSR", "JSRR", "TRAP", "JMP", "LEA", "LDb", "LDI", "LDR", "STb", "STI", "STR", "LSHF", "RSHFL", "RSHFA", "NOT", "RET", "RTI", "NOP"};
+const LC3bISA::Word LC3bISA::vOpcodes[NUM_OPCODES] = {0x1,   0x5,   0x0,  0x0,   0x0,   0x0,    0x0,   0x0,    0x0,    0x0,     0x4,   0x4,    0xF,    0xC,   0xE,   0x2,   0xA,   0x6,   0x3,   0xB,   0x7,   0xD,    0xD,     0xD,     0x9,   0xC,   0x8,   0x0, 	 0x8, 	 0x8, 	0x8, 	 0x8,  0x8};
+const char *const LC3bISA::sOpcodes[NUM_OPCODES] =  {"ADD", "AND", "BR", "BRp", "BRz", "BRzp", "BRn", "BRnp", "BRnz", "BRnzp", "JSR", "JSRR", "TRAP", "JMP", "LEA", "LDb", "LDI", "LDR", "STb", "STI", "STR", "LSHF", "RSHFL", "RSHFA", "NOT", "RET", "RTI", "NOP", "MULT", "DIV", "SUB", "XOR", "OR"};
 const char *const LC3bISA::sRegisters[NUM_REGISTERS] = {"R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "nzp"};
 
 
@@ -150,10 +150,16 @@ bool LC3bISA::Parser::ParseInstruction(list<Token *>::iterator &StartIter, const
 	case TOpcode:
 		switch(Instr = ((OpcodeToken *)(*StartIter))->Opcode)
 		{
+		// case MULT:
+		// 	printf("MULT\n" );
+		// 	TokenIter = StartIter++;
+		// 	break;
+
 		//All "Num" can also be "Symbol"
 		//Reg, Reg, Num or Reg
 		case ADD:
 		case AND:
+		case MULT:
 			TokenIter = StartIter++;
 
 			//Get the first register
@@ -200,8 +206,18 @@ bool LC3bISA::Parser::ParseInstruction(list<Token *>::iterator &StartIter, const
 				SR2 = ((RegToken *)(*StartIter))->Register;
 				if(Instr == ADD)
 					pNewInstr = new AddInstr((*OrigIter)->LocationStack, DR, SR1, SR2);
-				else
+				else if (Instr == AND)
 					pNewInstr = new AndInstr((*OrigIter)->LocationStack, DR, SR1, SR2);
+				else if (Instr == MULT)
+					pNewInstr = new ExtOpInstr((*OrigIter)->LocationStack, DR, SR1, SR2, MultInstrType);
+				else if (Instr == DIV)
+					pNewInstr = new ExtOpInstr((*OrigIter)->LocationStack, DR, SR1, SR2, DivInstrType);
+				else if (Instr == SUB)
+					pNewInstr = new ExtOpInstr((*OrigIter)->LocationStack, DR, SR1, SR2, SubInstrType);
+				else if (Instr == XOR)
+					pNewInstr = new ExtOpInstr((*OrigIter)->LocationStack, DR, SR1, SR2, XorInstrType);
+				else if (Instr == OR)
+					pNewInstr = new ExtOpInstr((*OrigIter)->LocationStack, DR, SR1, SR2, OrInstrType);
 				TokenIter = StartIter++;
 				break;
 			}
@@ -214,7 +230,7 @@ bool LC3bISA::Parser::ParseInstruction(list<Token *>::iterator &StartIter, const
 
 			if(Instr == ADD)
 				pNewInstr = new AddInstr((*OrigIter)->LocationStack, DR, SR1, pNumber);
-			else
+			else if(Instr == AND)
 				pNewInstr = new AndInstr((*OrigIter)->LocationStack, DR, SR1, pNumber);
 			break;
 		//Num
@@ -621,7 +637,7 @@ Element *LC3bISA::Disassembler::DisassembleInstruction(Disassembler *pThis, cons
 	case 0x4:	//vOpcodes[JSR]:
 		if(Instr.Jsr.JsrType)
 		{	//JSR
-		
+
 			if(Instr.Jsr.Offset11 & 0x400)
 				TempAddr = Address + 2 + ((uint64)(Instr.Jsr.Offset11 << 1) | 0xFFFFFFFFFFFFF000);
 			else
@@ -748,6 +764,105 @@ bool LC3bISA::Instruction::IsBranch() const
 bool LC3bISA::Instruction::IsMemory() const
 {
 	return false;
+}
+
+/******************************************************************************\
+|**********************************   ADD    **********************************|
+\******************************************************************************/
+
+LC3bISA::ExtOpInstr::ExtOpInstr(const LocationVector &LocationStack, RegisterEnum dr, RegisterEnum sr1, RegisterEnum sr2, ExtOpInstType instrType_ ) : Instruction(LocationStack)
+{
+	Opcode = MULT;
+	DR = dr;
+	SR1 = sr1;
+	SR2 = sr2;
+	Size = 2;
+	Length = 1;
+	opType = instrType_;
+}
+
+LC3bISA::ExtOpInstr::~ExtOpInstr()
+{
+
+}
+
+Element *LC3bISA::ExtOpInstr::Copy() const
+{
+	ExtOpInstr *pInstr = new ExtOpInstr(*this);
+
+	return pInstr;
+}
+
+void LC3bISA::ExtOpInstr::AssignValues(vector<Number *>::iterator &StartIter, const vector<Number *>::iterator &EndIter)
+{
+
+}
+
+bool LC3bISA::ExtOpInstr::GetImage(RamVector &vRam, bool fLittleEndian, CallBackFunction) const
+{
+	bool fRetVal = true;
+	vRam.clear();
+	LC3bInstruction Instr;
+
+	if(Address & 1)
+	{
+		sprintf(sMessageBuffer, "%.31s instruction address not word aligned.", sOpcodes[Opcode]);
+		CallBack(Error, sMessageBuffer, LocationStack);
+		fRetVal = false;
+	}
+
+	//Generate the instruction
+	Instr.ExtOpInst.Opcode = vOpcodes[Opcode];
+	Instr.ExtOpInst.DR = DR;
+	Instr.ExtOpInst.SR1 = SR1;
+
+	Instr.ExtOpInst.SR2 = SR2;
+
+	Instr.ExtOpInst.ExtOp = opType;
+
+
+	//Load the instruction into the RAM
+	if(fLittleEndian)
+	{
+		vRam.push_back( RamVector::value_type(Address, (unsigned char)Instr.Binary) );
+		vRam.push_back( RamVector::value_type(Address + 1, (unsigned char)(Instr.Binary >> 8)) );
+	}
+	else	//Big Endian
+	{
+		vRam.push_back( RamVector::value_type(Address, (unsigned char)(Instr.Binary >> 8)) );
+		vRam.push_back( RamVector::value_type(Address + 1, (unsigned char)Instr.Binary) );
+	}
+
+	return fRetVal;
+}
+
+unsigned int LC3bISA::ExtOpInstr::GetSources(vector<RegisterEnum> &vReg) const
+{
+	vReg.clear();
+	vReg.push_back(SR1);
+
+	vReg.push_back(SR2);
+	return 2;
+
+}
+
+unsigned int LC3bISA::ExtOpInstr::GetDestinations(vector<RegisterEnum> &vReg) const
+{
+	vReg.clear();
+	vReg.push_back(DR);
+	vReg.push_back(PSR);
+	return 2;
+}
+
+LC3bISA::ExtOpInstr::operator const char *() const
+{
+	static string sElem;
+	ostrstream strElement;
+
+	strElement << sOpcodes[Opcode] << "\t" << sRegisters[DR] << ", " << sRegisters[SR1] << ", " << sRegisters[SR2] << ends;
+
+	sElem = strElement.str();
+	return sElem.c_str();
 }
 
 /******************************************************************************\
@@ -1026,7 +1141,7 @@ LC3bISA::BrInstr::BrInstr(const LocationVector &LocationStack, OpcodeEnum Instr,
 {
 	if(Instr < BR || Instr > BRnzp)
 		throw "Invalid instruction type given to BrInstr!";
-	Opcode = Instr;	
+	Opcode = Instr;
 	pSOffset9 = psoffset9;
 	Size = 2;
 	Length = 1;
@@ -1128,7 +1243,7 @@ LC3bISA::BrInstr::operator const char *() const
 
 LC3bISA::JsrInstr::JsrInstr(const LocationVector &LocationStack, Number *psoffset11) : Instruction(LocationStack)
 {
-	Opcode = JSR;	
+	Opcode = JSR;
 	pSOffset11 = psoffset11;
 	Size = 2;
 	Length = 1;
@@ -1314,7 +1429,7 @@ LC3bISA::JsrrInstr::operator const char *() const
 
 LC3bISA::TrapInstr::TrapInstr(const LocationVector &LocationStack, Number *ptrapvect8) : Instruction(LocationStack)
 {
-	Opcode = TRAP;	
+	Opcode = TRAP;
 	pTrapVect8 = ptrapvect8;
 	Size = 2;
 	Length = 1;

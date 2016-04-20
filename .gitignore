@@ -6,3 +6,5 @@
 Debug
 Release
 Obj
+testcode/*.obj
+*.out

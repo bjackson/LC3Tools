@@ -5,8 +5,8 @@
 #pragma warning (disable:4786)
 #include <iostream>
 #include <cstdio>
-#include <new.h>
 #include "AsmUI.h"
+#include <cstdlib>
 
 using namespace std;
 using namespace LC3b;
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 			PrintUsage();
 			return 0;
 		}
-		
+
 		//This will hold the symbolic form of the program.
 		vector<Program *> AsmPrograms;
 		//This will hold the memory image of the program

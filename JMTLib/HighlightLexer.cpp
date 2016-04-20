@@ -136,7 +136,7 @@ TokenEnum HighlightLexer::LexIdentifier(const string &sInput, unsigned int &i)
 	}
 
 	//See if the identifier is a compiler keyword
-	Lexicon = (TokenEnum)(int)pLexer->LookUpKeyword(LocationVector(), sInput.substr(i, End - i), true);
+	Lexicon = (TokenEnum)(size_t)pLexer->LookUpKeyword(LocationVector(), sInput.substr(i, End - i), true);
 	if(Lexicon == TUnknown)
 	{
 		//It's a user-defined identifier
@@ -168,7 +168,6 @@ TokenEnum HighlightLexer::LexOperator(const string &sInput, unsigned int &i)
 
 	//Attempt to match the longest string of operators first. Then iteratively
 	//try matching shorter strings. For instance, this will match ++ beore +
-	while( End > i && (Lexicon = (TokenEnum)(int)pLexer->LookUpOperator(LocationVector(), sInput.substr(i, End-i), true)) == TUnknown)
 		End--;
 	if(Lexicon == TUnknown)
 		i++;
@@ -192,7 +191,7 @@ TokenEnum HighlightLexer::LexNumber(const string &sInput, unsigned int &i)
 		//The leading + or - might have been part of an operator.
 		if(pLexer->LookUpOperatorChar(LocationVector(), sInput[--i], Lexer::Beginning))
 			return LexOperator(sInput, i);
-		else 
+		else
 		{
 			i++;
 			return TUnknown;
@@ -212,7 +211,7 @@ TokenEnum HighlightLexer::LexNumber(const string &sInput, unsigned int &i)
 			i--;
 			if(Base == Dec)
 				return LexOperator(sInput, i);
-		}	
+		}
 		else
 			fReal = true;
 	}
@@ -299,7 +298,7 @@ bool HighlightLexer::LexBase(const string &sInput, unsigned int &i, BaseEnum &Ba
 	default:
 		return false;
 	}
-	
+
 	return true;
 }
 
