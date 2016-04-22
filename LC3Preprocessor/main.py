@@ -29,19 +29,19 @@ def transformXNOR(instargs):
     return transformed
 
 def transformNOR(instargs):
-    transformed = "NOR {0}, {1}, {2}\n".format(instargs[0], instargs[1], instargs[2])
+    transformed = "OR {0}, {1}, {2}\n".format(instargs[0], instargs[1], instargs[2])
     transformed += "NOT {0}, {0}\n".format(instargs[0])
     return transformed
 
 def transformNAND(instargs):
-    transformed = "NAND {0}, {1}, {2}\n".format(instargs[0], instargs[1], instargs[2])
+    transformed = "AND {0}, {1}, {2}\n".format(instargs[0], instargs[1], instargs[2])
     transformed += "NOT {0}, {0}\n".format(instargs[0])
     return transformed
 
 def transformLDBSE(instargs):
     transformed = "LDB {0}, {1}, {2}\n".format(instargs[0], instargs[1], instargs[2])
-    transformed += "LSHFL {0}, 8\n".format(instargs[0])
-    transformed += "RSHFA {0}, 8\n".format(instargs[0])
+    transformed += "LSHF {0}, {0}, 8\n".format(instargs[0])
+    transformed += "RSHFA {0}, {0}, 8\n".format(instargs[0])
     return transformed
 
 def getInstructionArguments(line):

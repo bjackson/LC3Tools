@@ -159,7 +159,11 @@ bool LC3bISA::Parser::ParseInstruction(list<Token *>::iterator &StartIter, const
 		//Reg, Reg, Num or Reg
 		case ADD:
 		case AND:
+		case XOR:
+		case OR:
+		case SUB:
 		case MULT:
+		case DIV:
 			TokenIter = StartIter++;
 
 			//Get the first register

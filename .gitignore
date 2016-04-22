@@ -9,3 +9,4 @@ Obj
 testcode/*.obj
 *.out
 *.lc3
+*.obj
